@@ -4,14 +4,10 @@ import Link from "next/link";
 import { BiTerminal } from "react-icons/bi";
 import { HiSun, HiMoon } from "react-icons/hi";
 import { CgUserlane } from "react-icons/cg";
-import { AiOutlineGoogle } from "react-icons/ai";
-import { auth, provider } from "../Firebase/Firebase";
-import { signInWithPopup, signOut } from "firebase/auth";
-import { IoLogOutOutline } from "react-icons/io5";
 import { SiCodefactor } from "react-icons/si";
 import { IoMdArrowDropdown } from "react-icons/io";
 import Alert from "./Alert";
-import { useDispatch } from "react-redux";
+
 
 function Navbar({ topics }) {
   const [isMounted, setIsMounted] = useState(false);
@@ -19,64 +15,18 @@ function Navbar({ topics }) {
   const { theme, setTheme } = useTheme();
   const [viewAlert, setViewAlert] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
-  const dispatch = useDispatch();
 
   useEffect(() => {
     setIsMounted(true);
-    const user = JSON.parse(localStorage.getItem("user"));
-
-    if (user) {
-      dispatch({ type: "STORE_USER", payload: user });
-      setLogin(true);
-    }
   }, []);
+
 
   const toggleTheme = () => {
     if (isMounted) {
       setTheme(theme === "light" ? "dark" : "light");
     }
   };
-  const handelSignOut = () => {
-    signOut(auth)
-      .then((res) => {
-        setLogin(false);
-        localStorage.removeItem("user");
-        dispatch({ type: "REMOVE_USER" });
-        setViewAlert(true);
-        setAlertMessage("Hope to see you again !!");
-        setTimeout(() => {
-          setViewAlert(false);
-        }, 2000);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  };
 
-  const handelSignIn = () => {
-    signInWithPopup(auth, provider)
-      .then((res) => {
-        const userObj = {
-          name: res.user.displayName,
-          photo: res.user.photoURL,
-          token: res.user.accessToken,
-          uid: res.user.uid,
-        };
-
-        localStorage.setItem("user", JSON.stringify(userObj));
-        dispatch({ type: "STORE_USER", payload: userObj });
-
-        setLogin(true);
-        setViewAlert(true);
-        setAlertMessage(`Hello ${res.user.displayName}`);
-        setTimeout(() => {
-          setViewAlert(false);
-        }, 2000);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
 
   return (
     <>
@@ -109,7 +59,7 @@ function Navbar({ topics }) {
                     <IoMdArrowDropdown className="text-xl" />
                   </span>
                 </a>
-                <ul className="dropdown-menu absolute hidden text-gray-700 pt-1 bg-white dark:bg-dark w-40 pt-6 rounded-xl left-1/3">
+                <ul className="dropdown-menu absolute hidden text-gray-700  bg-white dark:bg-dark w-40 pt-6 rounded-xl left-1/3">
                   {topics.map((topic) => (
                     <Link href={`/topic/${topic}`} key={topic}>
                       <li className="cursor-pointer">
@@ -144,23 +94,6 @@ function Navbar({ topics }) {
                   </span>
                 </a>
               </Link>
-
-              <button className="flex items-center mx-2 lg:mx-4 text-base text-gray-800 hover:text-indigo-600 dark:text-gray-50">
-                {isLogin ? (
-                  <span
-                    className="md:flex items-center"
-                    onClick={handelSignOut}
-                  >
-                    <span className="hidden md:block text-sm font-medium">Sign Out</span>
-                    <IoLogOutOutline className="text-xl mx-1" />
-                  </span>
-                ) : (
-                  <span className="md:flex items-center" onClick={handelSignIn}>
-                    <span className="hidden md:block text-sm font-medium"> Sign In</span>
-                    <AiOutlineGoogle className="text-xl mx-1" />
-                  </span>
-                )}
-              </button>
             </div>
           </div>
         </div>

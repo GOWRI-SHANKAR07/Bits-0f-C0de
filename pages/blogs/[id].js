@@ -5,7 +5,6 @@ import Footer from "../../Components/Footer";
 import Head from "next/head";
 import BlogInner from "../../Components/BlogInner";
 import BlogShare from "../../Components/BlogShare";
-import Comments from "../../Components/Comments";
 import { SWRConfig } from "swr";
 import { remarkHeadingId } from "remark-custom-heading-id";
 import { getHeadings } from "../../Lib/GetHeadings";
@@ -83,13 +82,6 @@ function id({ data, content, id, headings, topics }) {
         <Navbar topics={topics} />
         <div className="py-24">
           <BlogInner data={data} content={content} headings={headings} />
-          <LikeBtn id={id} />
-          <BlogShare data={data} />
-
-          <SWRConfig>
-            <Comments id={id} />
-          </SWRConfig>
-
           <Footer />
         </div>
       </div>
